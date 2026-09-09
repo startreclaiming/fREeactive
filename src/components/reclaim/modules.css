@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* Brand typography for the app-side modules.
+   Light, premium surface that sits cleanly in the existing app shell,
+   carrying the landing brand via Barlow Condensed + DM Sans + gold. */
+.reclaim-module {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  color: #1d1d1f;
+}
+.reclaim-module h1,
+.reclaim-module h2,
+.reclaim-module h3,
+.reclaim-module .mod-display {
+  font-family: 'Barlow Condensed', 'DM Sans', sans-serif;
+  letter-spacing: 0.005em;
+  line-height: 1.05;
+}
+.reclaim-module ::placeholder { color: #9b9ba1; }
+
+/* shared controls */
+.reclaim-module .input{width:100%;background:#fff;border:1px solid #e5e5ea;border-radius:8px;padding:10px 12px;font-size:14px;color:#1d1d1f;outline:none;transition:border-color .15s,box-shadow .15s;font-family:'DM Sans',sans-serif;}
+.reclaim-module .input:focus{border-color:#f0a700;box-shadow:0 0 0 3px rgba(240,167,0,.15);}
+.reclaim-module textarea.input{resize:vertical;min-height:80px;}
+.reclaim-module .btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#f0a700;color:#1d1d1f;font-weight:700;font-size:14px;padding:11px 18px;border-radius:8px;border:none;cursor:pointer;transition:filter .15s;}
+.reclaim-module .btn-gold:hover{filter:brightness(1.05);}
+.reclaim-module .card{border-radius:12px;border:1px solid rgba(0,0,0,0.05);background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.04);}

@@ -1,0 +1,166 @@
+name: Weekly SCO Data Sync
+
+on:
+  schedule:
+    # Every Thursday at 10:00 UTC (SCO updates Thursdays)
+    - cron: '0 10 * * 4'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360  # 6 hour max
+
+    steps:
+      - name: Free up disk space
+        run: |
+          # Remove pre-installed software the runner doesn't need for this job,
+          # to maximize free disk before we download anything.
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          df -h /
+
+      - name: Download SCO data (zip only — do NOT unzip to disk)
+        run: |
+          echo "Downloading CA SCO unclaimed property records..."
+          wget -q --show-progress \
+            "https://claimit.ca.gov/upd-property-records/00_All_Records.zip" \
+            -O sco_data.zip
+          echo "Download complete."
+          ls -lh sco_data.zip
+          unzip -l sco_data.zip
+          df -h /
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install psycopg2-binary
+
+      - name: Write import script
+        run: |
+          cat > import_stream.py << 'PYEOF'
+          import psycopg2, psycopg2.extras, csv, time, os, sys
+
+          DB_PARAMS = {
+              "host":    "aws-1-us-west-1.pooler.supabase.com",
+              "port":    5432,
+              "dbname":  "postgres",
+              "user":    "postgres.cjfheftldokpokqmckri",
+              "password": os.environ["SUPABASE_DB_PASSWORD"],
+              "sslmode": "require",
+              "keepalives": 1,
+              "keepalives_idle": 30,
+              "keepalives_interval": 10,
+              "keepalives_count": 5,
+          }
+
+          MIN_AMOUNT = 5.0  # Match the Alameda floor used elsewhere in the product
+          BATCH = 5000
+
+          def build_address(row):
+              parts = [row.get('OWNER_STREET_1','').strip(), row.get('OWNER_STREET_2','').strip(), row.get('OWNER_STREET_3','').strip()]
+              street = ', '.join(p for p in parts if p)
+              city  = row.get('OWNER_CITY','').strip()
+              state = row.get('OWNER_STATE','').strip()
+              zip_  = row.get('OWNER_ZIP','').strip()
+              addr  = ', '.join(p for p in [street, city, state] if p)
+              return (addr + ' ' + zip_).strip() if zip_ else addr
+
+          print("Connecting to Supabase...", flush=True)
+          conn = psycopg2.connect(**DB_PARAMS)
+          conn.autocommit = False
+          cur = conn.cursor()
+          cur.execute("SET default_transaction_read_only = off;")
+          cur.execute("SET statement_timeout = '30min';")
+          conn.commit()
+          print("Connected.", flush=True)
+
+          print("Clearing existing data...", flush=True)
+          cur.execute("TRUNCATE TABLE alameda_property_cache;")
+          conn.commit()
+
+          SQL = """
+              INSERT INTO alameda_property_cache
+                  (id, owner_name, holder_name, last_known_address, amount, zipcode)
+              VALUES %s
+          """
+          ROW_TEMPLATE = "(nextval('alameda_property_cache_id_seq'), %s, %s, %s, %s, %s)"
+
+          reader = csv.DictReader(sys.stdin, delimiter=',')
+          print(f"CSV columns detected: {reader.fieldnames}", flush=True)
+
+          batch, imported, skipped, t0 = [], 0, 0, time.time()
+          print("Importing (streaming, no full-file disk write)...\n", flush=True)
+
+          for row in reader:
+              name = row.get('OWNER_NAME','').strip()
+              if not name:
+                  skipped += 1
+                  continue
+              try:
+                  amt = float(str(row.get('CASH_REPORTED', row.get('CURRENT_CASH_BALANCE','0'))).replace(',','').strip() or '0')
+              except Exception:
+                  amt = 0.0
+              if amt < MIN_AMOUNT:
+                  skipped += 1
+                  continue
+              zip_raw = row.get('OWNER_ZIP','').strip()[:5]
+              try:
+                  zip_int = int(zip_raw) if zip_raw.isdigit() else None
+              except Exception:
+                  zip_int = None
+
+              batch.append((
+                  name,
+                  row.get('HOLDER_NAME','').strip() or None,
+                  build_address(row) or None,
+                  amt,
+                  zip_int,
+              ))
+              if len(batch) >= BATCH:
+                  for attempt in range(3):
+                      try:
+                          psycopg2.extras.execute_values(cur, SQL, batch, template=ROW_TEMPLATE, page_size=BATCH)
+                          conn.commit()
+                          break
+                      except Exception as e:
+                          print(f"\n  Reconnecting ({attempt+1}/3): {e}", flush=True)
+                          time.sleep(5)
+                          try:
+                              conn.close()
+                          except Exception:
+                              pass
+                          conn = psycopg2.connect(**DB_PARAMS)
+                          conn.autocommit = False
+                          cur = conn.cursor()
+                          cur.execute("SET statement_timeout = '30min';")
+                  imported += len(batch)
+                  batch = []
+                  elapsed = time.time() - t0
+                  rate = imported / elapsed if elapsed else 0
+                  print(f"  {imported:,} imported so far  ({rate:,.0f} rows/sec)", flush=True)
+
+          if batch:
+              psycopg2.extras.execute_values(cur, SQL, batch, template=ROW_TEMPLATE, page_size=BATCH)
+              conn.commit()
+              imported += len(batch)
+
+          cur.close()
+          conn.close()
+          elapsed_min = (time.time() - t0) / 60
+          print(f"\n\nDone! Imported {imported:,} | Skipped {skipped:,} | Time {elapsed_min:.1f}min", flush=True)
+          PYEOF
+          echo "Script written."
+
+      - name: Stream-unzip and import to Supabase
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          INNER_NAME=$(unzip -Z1 sco_data.zip | head -n 1)
+          echo "Streaming inner file: $INNER_NAME"
+          unzip -p sco_data.zip "$INNER_NAME" | python3 import_stream.py
+
+      - name: Done
+        run: echo "SCO sync complete"

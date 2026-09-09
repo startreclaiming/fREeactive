@@ -1,0 +1,1640 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@200;300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.reclaim-landing *, .reclaim-landing *::before, .reclaim-landing *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #1a1a1a;
+      --navy-deep:  #0f0f0f;
+      --gold:       #f0a700;
+      --gold-light: #ffb800;
+      --warm-white: #f2f2f0;
+      --white:      #ffffff;
+      --dim:        rgba(255,255,255,0.45);
+      --dim-dark:   rgba(0,0,0,0.45);
+
+        --f-display: 'Poppins', sans-serif;
+        --f-ui:      'Poppins', sans-serif;
+        --f-body:    'Poppins', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .reclaim-landing {
+      font-family: var(--f-body);
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    .reclaim-landing nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 22px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .reclaim-landing nav.scrolled {
+      background: rgba(15,15,15,0.94);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .reclaim-landing .nav-logo { height: 32px; width: auto; }
+    .reclaim-landing .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+    .reclaim-landing .nav-link {
+      font-family: var(--f-ui);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .reclaim-landing .nav-link:hover { color: var(--white); }
+    .reclaim-landing .nav-cta {
+      background: var(--gold);
+      color: var(--navy);
+      font-family: var(--f-ui);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      padding: 10px 22px;
+      border-radius: 2px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .reclaim-landing .nav-cta:hover { background: var(--gold-light); }
+
+    /* ─── HERO ────────────────────────────────────────── */
+    .reclaim-landing .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 55%, rgba(240,167,0,0.07) 0%, transparent 65%),
+        #181818;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 140px 48px 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reclaim-landing .hero-deco {
+      position: absolute;
+      right: -8%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 55vh;
+      opacity: 0.045;
+      pointer-events: none;
+      user-select: none;
+    }
+    .reclaim-landing .hero-deco-left {
+      position: absolute;
+      left: -12%;
+      top: 50%;
+      transform: translateY(-50%) scaleX(-1);
+      width: 40vh;
+      opacity: 0.025;
+      pointer-events: none;
+    }
+
+    .reclaim-landing .hero-logo-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+    .reclaim-landing .hero-top-logo {
+      position: absolute;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    .reclaim-landing .hero-top-logo-img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+    .reclaim-landing .hero-logo {
+      height: 48px;
+      width: auto;
+    }
+
+    .reclaim-landing .hero-eyebrow {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .reclaim-landing .hero-headline {
+      font-family: var(--f-display);
+      font-weight: 300;
+      font-size: clamp(60px, 7.5vw, 98px);
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      max-width: 960px;
+      margin-bottom: 32px;
+      margin-top: -30px;
+      text-wrap: balance;
+    }
+    .reclaim-landing .hero-headline-inline-logo {
+      height: 2.21em;
+      width: auto;
+      display: block;
+      position: relative;
+      transform: translateY(0.15em);
+      margin-left: -0.25em;
+    }
+    .reclaim-landing .hero-headline-line1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.6em;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2em;
+    }
+    .reclaim-landing .line1-word {
+      line-height: 1;
+      display: inline-block;
+    }
+    .reclaim-landing .line1-word + .hero-headline-inline-logo {
+      margin-left: -0.3em;
+    }
+    .reclaim-landing .hero-headline em {
+      font-style: normal;
+      color: var(--gold);
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 1em;
+    }
+
+    .reclaim-landing .hero-sub {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      font-size: 28px;
+      line-height: 1.7;
+      color: var(--white);
+      max-width: 1200px;
+      margin-bottom: 56px;
+      margin-top: 72px;
+      text-wrap: balance;
+    }
+
+    .reclaim-landing .hero-module-labels {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 80px;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .reclaim-landing .hero-module-labels span {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      flex: 1;
+      text-align: center;
+    }
+    .reclaim-landing .hero-modules {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 72px;
+      margin-top: 0;
+      width: 100%;
+      max-width: 900px;
+    }
+    .reclaim-landing .hero-module-pill {
+      width: 176px;
+      height: 176px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.10);
+      text-decoration: none;
+      transition: all 0.22s;
+      background: rgba(255,255,255,0.12);
+      overflow: hidden;
+      padding: 16px;
+      flex: 1 1 0;
+    }
+    .reclaim-landing .hero-module-pill:hover {
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-3px);
+    }
+    .reclaim-landing .hero-module-pill.is-gold {
+      border-color: rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.12);
+    }
+    .reclaim-landing .hero-module-pill.is-gold:hover {
+      border-color: rgba(240,167,0,0.5);
+      background: rgba(240,167,0,0.1);
+    }
+    .reclaim-landing .hero-module-pill img,
+    .reclaim-landing .hero-module-pill svg {
+      width: 112px;
+      height: 112px;
+      display: block;
+    }
+    .reclaim-landing .hero-module-pill svg {
+      overflow: visible;
+    }
+
+    .reclaim-landing .hero-sub-modules {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 0.82em;
+      letter-spacing: 0.18em;
+      color: var(--white);
+      display: block;
+      margin-bottom: 0;
+    }
+
+    .reclaim-landing .scroll-indicator {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeInBob 3s 1.5s forwards;
+    }
+    .reclaim-landing .scroll-line {
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.35));
+    }
+    .reclaim-landing .scroll-label {
+      font-family: var(--f-ui);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    @keyframes fadeInBob {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      30%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      70%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85%  { opacity: 0.4; transform: translateX(-50%) translateY(6px); }
+      100% { opacity: 0.3; transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─── MODULES ─────────────────────────────────────── */
+    .reclaim-landing .module {
+      position: relative;
+      overflow: hidden;
+    }
+    .reclaim-landing .module-wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 110px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+      min-height: 86vh;
+    }
+    .reclaim-landing .module-wrap.flip { direction: rtl; }
+    .reclaim-landing .module-wrap.flip > * { direction: ltr; }
+
+    .reclaim-landing .module-copy { }
+    .reclaim-landing .module-label {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .reclaim-landing .module-label-line {
+      display: block;
+      width: 36px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    .reclaim-landing .module-h {
+      font-family: var(--f-display);
+      font-weight: 400;
+      font-size: clamp(38px, 4.2vw, 62px);
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      margin-bottom: 28px;
+      text-wrap: balance;
+    }
+
+    .reclaim-landing .module-desc {
+      font-family: var(--f-body);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.8;
+      opacity: 0.6;
+      max-width: 400px;
+    }
+    .reclaim-landing .module-footnote {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-style: italic;
+      opacity: 0.38;
+      margin-top: 20px;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+
+    /* Visual side */
+    .reclaim-landing .module-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reclaim-landing .module-bg-num {
+      position: absolute;
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: clamp(200px, 22vw, 340px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      opacity: 0.05;
+      pointer-events: none;
+      user-select: none;
+      right: -30px;
+    }
+    .reclaim-landing .module-img-placeholder {
+      width: 100%;
+      aspect-ratio: 5/4;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reclaim-landing .module-img-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 14px,
+        rgba(255,255,255,0.025) 14px,
+        rgba(255,255,255,0.025) 28px
+      );
+    }
+    .reclaim-landing .module-img-placeholder.light::before {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 14px,
+        rgba(13,28,54,0.04) 14px,
+        rgba(13,28,54,0.04) 28px
+      );
+    }
+    .reclaim-landing .placeholder-text {
+      font-family: 'DM Sans', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .reclaim-landing .money-visual {
+      width: 100%;
+      position: relative;
+    }
+
+    /* ─── RIGHTS PHOTO COMPOSITE ──────────────────────── */
+    .reclaim-landing .rights-photo-visual {
+      width: 100%;
+      aspect-ratio: 5/4;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .reclaim-landing .rights-photo-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.5) saturate(0.6);
+    }
+    .reclaim-landing .rights-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(26,26,26,0.6) 0%, rgba(26,26,26,0.1) 60%, transparent 100%);
+    }
+    .reclaim-landing .rights-card {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 54%;
+      background: rgba(15,15,15,0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .reclaim-landing .rights-card-header {
+      background: rgba(240,167,0,0.12);
+      border-bottom: 1px solid rgba(240,167,0,0.2);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reclaim-landing .rights-card-icon { font-size: 14px; }
+    .reclaim-landing .rights-card-title {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      flex: 1;
+    }
+    .reclaim-landing .rights-card-step {
+      font-family: var(--f-ui);
+      font-size: 9px;
+      color: rgba(240,167,0,0.55);
+      letter-spacing: 0.08em;
+    }
+    .reclaim-landing .rights-steps {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .reclaim-landing .rights-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .reclaim-landing .rights-step-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--f-ui);
+      font-size: 9px;
+      color: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+    .reclaim-landing .rights-step-dot.done {
+      background: rgba(240,167,0,0.15);
+      border-color: rgba(240,167,0,0.4);
+      color: var(--gold);
+      font-size: 10px;
+    }
+    .reclaim-landing .rights-step-dot.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+    .reclaim-landing .rights-step-label {
+      font-family: var(--f-body);
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.3;
+    }
+    .reclaim-landing .rights-step-label.dim { color: rgba(255,255,255,0.3); font-weight: 400; }
+    .reclaim-landing .rights-step-sub {
+      font-family: var(--f-body);
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+    }
+    .reclaim-landing .rights-step-sub.dim { color: rgba(255,255,255,0.18); }
+    .reclaim-landing .rights-step-input {
+      font-family: var(--f-body);
+      font-size: 9px;
+      color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 3px;
+      padding: 3px 8px;
+      margin-top: 3px;
+    }
+    .reclaim-landing .home-visual {
+      width: 100%;
+      aspect-ratio: 5/4;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .reclaim-landing .home-visual-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.55) saturate(0.7);
+    }
+    .reclaim-landing .home-visual-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(7,13,26,0.5) 0%, rgba(7,13,26,0.1) 60%, transparent 100%);
+    }
+    /* Phone frame composite */
+    .reclaim-landing .home-phone {
+      position: absolute;
+      bottom: -5%;
+      right: 6%;
+      width: 38%;
+      max-width: 200px;
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,0.7));
+    }
+    .reclaim-landing .home-phone-frame {
+      background: #0d0d0d;
+      border-radius: 28px;
+      border: 2px solid rgba(255,255,255,0.12);
+      padding: 8px;
+      position: relative;
+    }
+    .reclaim-landing .home-phone-screen {
+      background: #111111;
+      border-radius: 22px;
+      overflow: hidden;
+      aspect-ratio: 9/19;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .reclaim-landing .home-phone-statusbar {
+      height: 28px;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      flex-shrink: 0;
+    }
+    .reclaim-landing .home-phone-statusbar span {
+      font-family: var(--f-ui);
+      font-size: 7px;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.05em;
+    }
+    .reclaim-landing .home-phone-viewfinder {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .reclaim-landing .home-phone-viewfinder-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.65) saturate(0.75);
+    }
+    /* Scan frame corners */
+    .reclaim-landing .scan-frame {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reclaim-landing .scan-box {
+      width: 65%;
+      aspect-ratio: 1;
+      position: relative;
+    }
+    .reclaim-landing .scan-box::before, .reclaim-landing .scan-box::after, .reclaim-landing .scan-box span::before, .reclaim-landing .scan-box span::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .reclaim-landing .scan-box::before  { top: 0;    left: 0;  border-width: 2px 0 0 2px; }
+    .reclaim-landing .scan-box::after   { top: 0;    right: 0; border-width: 2px 2px 0 0; }
+    .reclaim-landing .scan-box span::before { bottom: 0; left: 0;  border-width: 0 0 2px 2px; }
+    .reclaim-landing .scan-box span::after  { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+    /* Scan line animation */
+    .reclaim-landing .scan-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: scanMove 2.4s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--gold);
+      top: 0;
+    }
+    @keyframes scanMove {
+      0%   { top: 8%; opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { top: 92%; opacity: 0; }
+    }
+    /* Tag chip */
+    .reclaim-landing .scan-tag {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(240,167,0,0.92);
+      color: #070d1a;
+      font-family: var(--f-ui);
+      font-weight: 700;
+      font-size: 6px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .reclaim-landing .home-phone-bottombar {
+      height: 32px;
+      background: #111111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .reclaim-landing .home-phone-bottombar-pill {
+      width: 36px;
+      height: 3px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 2px;
+    }
+    /* Label badge in corner */
+    .reclaim-landing .home-label-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(10,10,10,0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(240,167,0,0.3);
+      border-radius: 4px;
+      padding: 8px 14px;
+    }
+    .reclaim-landing .home-label-badge-title {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2px;
+    }
+    .reclaim-landing .home-label-badge-sub {
+      font-family: var(--f-body);
+      font-size: 9px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ─── DARK MODULE ──────────────────────────────────── */
+    .reclaim-landing .module--dark { background: var(--navy); color: var(--white); }
+    .reclaim-landing .module--dark:nth-of-type(4n+1) { background: #1a1a1a; }
+    .reclaim-landing .module--dark:nth-of-type(4n+3) { background: #222222; }
+    .reclaim-landing .module--dark .module-label { color: var(--gold); }
+    .reclaim-landing .module--dark .module-img-placeholder {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+    .reclaim-landing .module--dark .placeholder-text { color: rgba(255,255,255,0.2); }
+
+    /* ─── LIGHT MODULE ─────────────────────────────────── */
+    .reclaim-landing .module--light { background: #f0f0ee; color: #141414; }
+    .reclaim-landing .module--light .module-label { color: #141414; opacity: 0.5; }
+    .reclaim-landing .module--light .module-desc { color: #141414; }
+    .reclaim-landing .module--light .module-footnote { color: #141414; }
+    .reclaim-landing .module--light .module-bg-num { color: #141414; }
+    .reclaim-landing .module--light .module-img-placeholder {
+      border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.02);
+    }
+    .reclaim-landing .module--light .placeholder-text { color: rgba(0,0,0,0.2); }
+
+    /* ─── COMMUNITY MODULE ─────────────────────────────── */
+    .reclaim-landing .module--gold { background: var(--gold); color: var(--navy); }
+    .reclaim-landing .module--gold .module-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 80px;
+      text-align: left;
+      padding: 130px 80px;
+    }
+    .reclaim-landing .module--gold .module-label {
+      color: var(--navy);
+      opacity: 0.55;
+      justify-content: flex-start;
+    }
+    .reclaim-landing .module--gold .module-h {
+      font-size: clamp(56px, 7.5vw, 96px);
+      font-weight: 500;
+      line-height: 1.05;
+      max-width: 1200px;
+      white-space: nowrap;
+      margin-bottom: 32px;
+    }
+    .reclaim-landing .module--gold .module-desc {
+      color: var(--navy);
+      opacity: 0.62;
+      max-width: 480px;
+      font-size: 17px;
+    }
+    .reclaim-landing .community-img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 8px;
+      display: block;
+    }
+    .reclaim-landing .module--gold-deco {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 80%;
+      opacity: 0.08;
+      pointer-events: none;
+      filter: brightness(0);
+    }
+
+    /* ─── DIVIDER ──────────────────────────────────────── */
+    .reclaim-landing .module-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+    .reclaim-landing .module-divider.dark-on-light {
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* ─── PARTNERS ─────────────────────────────────────── */
+    .reclaim-landing .partners {
+      background: #f0f0ee;
+      color: #141414;
+      padding: 90px 80px;
+      text-align: center;
+    }
+    .reclaim-landing .partners-eyebrow {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #141414;
+      opacity: 0.4;
+      margin-bottom: 20px;
+    }
+    .reclaim-landing .partners-headline {
+      font-family: var(--f-display);
+      font-weight: 400;
+      font-size: clamp(26px, 2.8vw, 40px);
+      line-height: 1.3;
+      max-width: 740px;
+      margin: 0 auto 56px;
+      text-wrap: balance;
+    }
+    .reclaim-landing .partners-list {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0 52px;
+    }
+    .reclaim-landing .partner {
+      font-family: var(--f-ui);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      color: #141414;
+      opacity: 0.28;
+      padding: 8px 0;
+    }
+
+    /* ─── CTA ──────────────────────────────────────────── */
+    .reclaim-landing .cta-section {
+      background: #0f0f0f;
+      padding: 130px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .reclaim-landing .cta-deco {
+      position: absolute;
+      left: -8%;
+      top: 50%;
+      transform: translateY(-50%) scaleX(-1);
+      height: 100%;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    .reclaim-landing .cta-eyebrow {
+      font-family: var(--f-ui);
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .reclaim-landing .cta-headline {
+      font-family: var(--f-display);
+      font-weight: 300;
+      font-size: clamp(44px, 6vw, 80px);
+      line-height: 1.06;
+      max-width: 740px;
+      margin: 0 auto 52px;
+      text-wrap: balance;
+    }
+    .reclaim-landing .cta-form {
+      display: flex;
+      gap: 10px;
+      max-width: 460px;
+      margin: 0 auto 16px;
+    }
+    .reclaim-landing .cta-input {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 2px;
+      padding: 14px 20px;
+      color: var(--white);
+      font-family: var(--f-body);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .reclaim-landing .cta-input::placeholder { color: rgba(255,255,255,0.28); }
+    .reclaim-landing .cta-input:focus { border-color: var(--gold); }
+    .reclaim-landing .cta-btn-submit {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 2px;
+      padding: 14px 26px;
+      font-family: var(--f-ui);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .reclaim-landing .cta-btn-submit:hover { background: var(--gold-light); }
+    .reclaim-landing .cta-note {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: rgba(255,255,255,0.22);
+    }
+
+    /* ─── FOOTER ───────────────────────────────────────── */
+    .reclaim-landing footer {
+      background: #0a0a0a;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 32px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .reclaim-landing .footer-logo { height: 18px; opacity: 0.45; }
+    .reclaim-landing .footer-links {
+      display: flex;
+      gap: 28px;
+    }
+    .reclaim-landing .footer-link {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .reclaim-landing .footer-link:hover { color: rgba(255,255,255,0.5); }
+    .reclaim-landing .footer-copy {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: rgba(255,255,255,0.18);
+    }
+
+    /* ─── ANIMATIONS ───────────────────────────────────── */
+    .reclaim-landing .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.75s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reclaim-landing .fade-up.in { opacity: 1; transform: translateY(0); }
+    .reclaim-landing .fade-up[data-delay="1"] { transition-delay: 0.1s; }
+    .reclaim-landing .fade-up[data-delay="2"] { transition-delay: 0.22s; }
+    .reclaim-landing .fade-up[data-delay="3"] { transition-delay: 0.36s; }
+    .reclaim-landing .fade-up[data-delay="4"] { transition-delay: 0.52s; }
+
+/* ─── RESPONSIVE (added in rebuild) ─────────────────── */
+@media (max-width: 900px) {
+  .reclaim-landing nav { padding: 16px 24px; }
+  .reclaim-landing .nav-links { gap: 18px; }
+  .reclaim-landing .nav-link { display: none; }            /* keep logo + CTA only on small screens */
+
+  .reclaim-landing .hero { padding: 120px 24px 80px; }
+  .reclaim-landing .hero-sub { font-size: 20px; line-height: 1.6; margin-top: 48px !important; }
+  .reclaim-landing .hero-module-labels { gap: 16px; margin-top: 56px; }
+  .reclaim-landing .hero-module-labels span { font-size: 13px; letter-spacing: 0.12em; }
+  .reclaim-landing .hero-modules { gap: 20px; }
+  .reclaim-landing .hero-module-pill { width: auto; height: 140px; flex: 1 1 40%; }
+  .reclaim-landing .hero-module-pill img, .reclaim-landing .hero-module-pill svg { width: 88px; height: 88px; }
+
+  .reclaim-landing .module-wrap,
+  .reclaim-landing .module--gold .module-wrap {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 72px 28px;
+    min-height: 0;
+  }
+  .reclaim-landing .module-wrap.flip { direction: ltr; }   /* restore natural order when stacked */
+  .reclaim-landing .module-desc, .reclaim-landing .module--gold .module-desc { max-width: none; }
+  .reclaim-landing .module--gold .module-h { white-space: normal; font-size: clamp(40px, 11vw, 64px); }
+  .reclaim-landing .module-bg-num { font-size: clamp(140px, 30vw, 220px); right: -10px; }
+
+  .reclaim-landing .partners { padding: 64px 28px; }
+  .reclaim-landing .partners-headline { font-size: clamp(24px, 5vw, 34px); }
+  .reclaim-landing .cta-section { padding: 88px 28px; }
+  .reclaim-landing .cta-form { flex-direction: column; max-width: 360px; }
+  .reclaim-landing .cta-btn-submit { padding: 14px; }
+
+  .reclaim-landing footer { padding: 28px 24px; justify-content: center; text-align: center; }
+}
+
+@media (max-width: 560px) {
+  .reclaim-landing .hero-headline { font-size: clamp(44px, 13vw, 64px); }
+  .reclaim-landing .hero-sub { font-size: 18px; }
+  .reclaim-landing .hero-module-labels { display: none; } /* redundant with the icon pills on tiny screens */
+  .reclaim-landing .hero-module-pill { flex: 1 1 42%; height: 124px; }
+  .reclaim-landing .home-phone { width: 46%; }
+}
+
+.reclaim-landing { box-sizing: border-box; min-height: 100vh; }
+
+/* ─── CTA REQUEST FORM (added) ──────────────────────── */
+.reclaim-landing .cta-form {
+  flex-direction: column;
+  gap: 12px;
+  max-width: 460px;
+  align-items: stretch;
+}
+.reclaim-landing .cta-field-row { display: flex; gap: 10px; }
+.reclaim-landing .cta-field-row > * { flex: 1; min-width: 0; }
+.reclaim-landing .cta-select,
+.reclaim-landing .cta-textarea {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 2px;
+  padding: 14px 20px;
+  color: var(--white);
+  font-family: var(--f-body);
+  font-size: 15px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.reclaim-landing .cta-select { -webkit-appearance: none; appearance: none; cursor: pointer; }
+.reclaim-landing .cta-select option { color: #111; }
+.reclaim-landing .cta-textarea { resize: vertical; min-height: 92px; }
+.reclaim-landing .cta-select:focus,
+.reclaim-landing .cta-textarea:focus { border-color: var(--gold); }
+.reclaim-landing .cta-btn-submit { width: 100%; padding: 15px 26px; }
+
+/* ─── CONTINUE-TO-SITE CHOOSER POPUP (added) ────────── */
+.reclaim-landing .chooser-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 24px;
+  animation: chooser-fade 0.18s ease-out;
+}
+@keyframes chooser-fade { from { opacity: 0; } to { opacity: 1; } }
+.reclaim-landing .chooser-card {
+  position: relative; width: 100%; max-width: 420px;
+  background: #1a1a1a; border: 1px solid rgba(240,167,0,0.30);
+  border-radius: 8px; padding: 40px 32px 34px; text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+}
+.reclaim-landing .chooser-close {
+  position: absolute; top: 12px; right: 16px;
+  background: none; border: none; color: var(--dim);
+  font-size: 26px; line-height: 1; cursor: pointer; padding: 0;
+}
+.reclaim-landing .chooser-close:hover { color: var(--white); }
+.reclaim-landing .chooser-eyebrow {
+  font-family: var(--f-ui); font-weight: 600; font-size: 10px;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+}
+.reclaim-landing .chooser-title {
+  font-family: var(--f-display); font-weight: 400; font-size: 27px;
+  line-height: 1.12; color: var(--white); margin-bottom: 28px;
+}
+.reclaim-landing .chooser-btn {
+  display: block; width: 100%; padding: 15px 18px; margin-bottom: 12px;
+  border-radius: 2px; border: 1px solid transparent;
+  font-family: var(--f-ui); font-weight: 700; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.reclaim-landing .chooser-btn:last-child { margin-bottom: 0; }
+.reclaim-landing .chooser-btn-primary { background: var(--gold); color: var(--navy); }
+.reclaim-landing .chooser-btn-primary:hover { background: var(--gold-light); }
+.reclaim-landing .chooser-btn-secondary { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.22); }
+.reclaim-landing .chooser-btn-secondary:hover { border-color: var(--white); }
+
+/* ─── HOW IT WORKS / INTAKE PREVIEW ─────────────────── */
+.reclaim-landing .intake-section {
+  background: #f0f0ee;
+  color: #141414;
+  padding: 100px 80px;
+  text-align: center;
+  position: relative;
+}
+.reclaim-landing .intake-eyebrow {
+  font-family: var(--f-ui);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #141414;
+  opacity: 0.4;
+  margin-bottom: 20px;
+}
+.reclaim-landing .intake-h {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+  text-wrap: balance;
+}
+.reclaim-landing .intake-sub {
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.7;
+  color: #141414;
+  opacity: 0.55;
+  max-width: 560px;
+  margin: 0 auto 64px;
+  text-wrap: balance;
+}
+.reclaim-landing .intake-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 960px;
+  margin: 0 auto 56px;
+}
+.reclaim-landing .intake-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 12px;
+  padding: 36px 28px;
+  text-align: left;
+  transition: transform 0.2s;
+}
+.reclaim-landing .intake-card:hover { transform: translateY(-3px); }
+.reclaim-landing .intake-card-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(240,167,0,0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.reclaim-landing .intake-card-title {
+  font-family: var(--f-ui);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: #141414;
+  margin-bottom: 10px;
+}
+.reclaim-landing .intake-card-desc {
+  font-family: var(--f-body);
+  font-size: 14px;
+  line-height: 1.75;
+  color: #141414;
+  opacity: 0.55;
+}
+.reclaim-landing .intake-verdict {
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: #141414;
+  opacity: 0.7;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .reclaim-landing .intake-section { padding: 72px 28px; }
+  .reclaim-landing .intake-cards { grid-template-columns: 1fr; gap: 16px; max-width: 480px; }
+}
+
+/* ─── CENTERED LOGO HERO ─────────────────────────────── */
+.reclaim-landing .hero-logo-lockup {
+  margin-bottom: 36px;
+}
+.reclaim-landing .hero-logo-main {
+  height: 72px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+@media (max-width: 560px) {
+  .reclaim-landing .hero-logo-main { height: 48px; }
+}
+
+.reclaim-landing .hero-tagline {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(42px, 5.5vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 56px;
+  text-wrap: balance;
+}
+
+/* ─── MODULE CARDS (with name + blurb) ──────────────── */
+.reclaim-landing .hero-module-cards { max-width: 1100px; margin-bottom: 64px; }
+
+.reclaim-landing .hero-module-card {
+  height: auto;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 20px 24px;
+  gap: 0;
+}
+.reclaim-landing .hero-module-card img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+}
+.reclaim-landing .hero-module-name {
+  font-family: var(--f-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  display: block;
+  margin-bottom: 10px;
+}
+.reclaim-landing .hero-module-blurb {
+  font-family: var(--f-body);
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.42);
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .reclaim-landing .hero-module-card { padding: 22px 14px 20px; }
+  .reclaim-landing .hero-module-card img { width: 64px; height: 64px; margin-bottom: 12px; }
+  .reclaim-landing .hero-module-name { font-size: 11px; }
+  .reclaim-landing .hero-module-blurb { font-size: 12px; }
+}
+
+/* ─── COMMUNITY SECTION OVERRIDES ────────────────────── */
+/* Smaller headline so the image can breathe */
+.reclaim-landing .module--gold .module-h {
+  font-size: clamp(32px, 3.8vw, 52px);
+  white-space: normal;
+}
+/* Give the image more grid space (1/3 copy, 2/3 image) */
+.reclaim-landing .module--gold .module-wrap {
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+}
+/* Larger, taller community image */
+.reclaim-landing .community-img {
+  aspect-ratio: 2/3;
+  min-height: 520px;
+}
+@media (max-width: 900px) {
+  .reclaim-landing .module--gold .module-wrap { grid-template-columns: 1fr; }
+  .reclaim-landing .community-img { min-height: 360px; aspect-ratio: 4/3; }
+}
+
+/* ─── COMMUNITY — match standard module layout ───────── */
+.reclaim-landing .module--gold .module-wrap {
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  padding: 110px 80px;
+  min-height: 86vh;
+  text-align: left;
+}
+.reclaim-landing .module--gold .module-h {
+  font-size: clamp(38px, 4.2vw, 62px);
+  font-weight: 400;
+  white-space: normal;
+  margin-bottom: 28px;
+}
+.reclaim-landing .module--gold .module-desc {
+  font-size: 16px;
+  max-width: 400px;
+}
+/* Photo composite — mirrors the rights visual */
+.reclaim-landing .community-photo-visual {
+  width: 100%;
+  aspect-ratio: 5/4;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.reclaim-landing .community-photo-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.reclaim-landing .community-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(240,167,0,0.15) 0%, transparent 60%);
+}
+@media (max-width: 900px) {
+  .reclaim-landing .module--gold .module-wrap {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 72px 28px;
+    min-height: 0;
+  }
+  .reclaim-landing .module--gold .module-desc { max-width: none; }
+}
+
+/* ─── HERO MODULE CARDS — SVG icon container ─────────── */
+.reclaim-landing .hero-module-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  flex-shrink: 0;
+}
+.reclaim-landing .hero-module-icon svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+/* ─── HERO STATS STRIP ───────────────────────────────── */
+.reclaim-landing .hero-stats {
+  display: flex;
+  align-items: center;
+  max-width: 860px;
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  margin-bottom: 60px;
+  overflow: hidden;
+}
+.reclaim-landing .hero-stat {
+  flex: 1;
+  padding: 24px 20px;
+  text-align: center;
+}
+.reclaim-landing .hero-stat-num {
+  display: block;
+  font-family: var(--f-display);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.reclaim-landing .hero-stat-desc {
+  display: block;
+  font-family: var(--f-body);
+  font-size: 11px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.4);
+  max-width: 120px;
+  margin: 0 auto;
+}
+.reclaim-landing .hero-stat-divider {
+  width: 1px;
+  height: 56px;
+  background: rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+/* ─── SMALLER MODULE ICONS ───────────────────────────── */
+.reclaim-landing .hero-module-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+}
+.reclaim-landing .hero-module-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+@media (max-width: 700px) {
+  .reclaim-landing .hero-stats {
+    flex-wrap: wrap;
+    border-radius: 10px;
+  }
+  .reclaim-landing .hero-stat {
+    flex: 1 0 45%;
+    padding: 18px 12px;
+  }
+  .reclaim-landing .hero-stat-divider { display: none; }
+}
+
+/* Stat source attribution */
+.reclaim-landing .hero-stat-source {
+  display: block;
+  font-family: var(--f-body);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-top: 6px;
+}
+
+/* ─── 5-STAT STRIP OVERRIDES ─────────────────────────── */
+.reclaim-landing .hero-stats {
+  max-width: 1080px;
+}
+.reclaim-landing .hero-stat {
+  padding: 22px 14px;
+}
+.reclaim-landing .hero-stat-desc {
+  font-size: 10.5px;
+}
+
+/* ─── STATS: NO BOX, PLAIN ON BACKGROUND ─────────────── */
+.reclaim-landing .hero-stats {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  max-width: 1100px;
+  margin-top: 48px;
+  margin-bottom: 0;
+  padding: 0;
+  align-items: flex-start;
+}
+.reclaim-landing .hero-stat {
+  padding: 0 28px;
+  text-align: center;
+}
+.reclaim-landing .hero-stat-num {
+  font-size: clamp(26px, 3vw, 38px);
+  margin-bottom: 6px;
+}
+.reclaim-landing .hero-stat-label {
+  display: block;
+  font-family: var(--f-ui);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.reclaim-landing .hero-stat-source {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.22);
+}
+.reclaim-landing .hero-stat-divider {
+  width: 1px;
+  height: 48px;
+  background: rgba(255,255,255,0.1);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+/* ─── SMALLER MODULE CARDS ───────────────────────────── */
+.reclaim-landing .hero-module-card {
+  padding: 16px 12px 14px !important;
+}
+.reclaim-landing .hero-module-icon {
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 10px !important;
+}
+.reclaim-landing .hero-module-icon svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+.reclaim-landing .hero-module-name {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.reclaim-landing .hero-module-blurb {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .reclaim-landing .hero-stats { flex-wrap: wrap; gap: 24px 0; }
+  .reclaim-landing .hero-stat { flex: 1 0 45%; padding: 0 12px; }
+  .reclaim-landing .hero-stat-divider { display: none; }
+}
+
+/* ─── ABOVE-THE-FOLD COMPRESSION ─────────────────────── */
+/* Tighten hero top padding */
+.reclaim-landing .hero {
+  padding-top: 80px !important;
+}
+/* Logo — less breathing room below */
+.reclaim-landing .hero-logo-lockup {
+  margin-bottom: 20px !important;
+}
+/* Tagline — pull up */
+.reclaim-landing .hero-tagline {
+  margin-bottom: 28px !important;
+  font-size: clamp(36px, 4.5vw, 64px) !important;
+}
+/* Module cards grid — tighter below */
+.reclaim-landing .hero-module-cards {
+  margin-bottom: 24px !important;
+  gap: 12px !important;
+}
+/* Module cards — even smaller */
+.reclaim-landing .hero-module-card {
+  padding: 10px 8px 10px !important;
+}
+/* Bigger module name, smaller icon */
+.reclaim-landing .hero-module-name {
+  font-size: 13px !important;
+  letter-spacing: 0.14em !important;
+  margin-bottom: 4px !important;
+}
+.reclaim-landing .hero-module-blurb {
+  font-size: 10px !important;
+  line-height: 1.45 !important;
+  color: rgba(255,255,255,0.35) !important;
+}
+.reclaim-landing .hero-module-icon {
+  width: 32px !important;
+  height: 32px !important;
+  margin-bottom: 8px !important;
+}
+.reclaim-landing .hero-module-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+/* Softer, shorter verbiage */
+.reclaim-landing .hero-sub {
+  color: rgba(255,255,255,0.4) !important;
+  font-size: 14px !important;
+  margin-bottom: 28px !important;
+  margin-top: 0 !important;
+}
+/* Stats strip — tighter */
+.reclaim-landing .hero-stats {
+  margin-top: 0 !important;
+}
+
+/* ─── HERO: TOP-ALIGN + COMPRESS ─────────────────────── */
+.reclaim-landing .hero {
+  justify-content: flex-start !important;
+  min-height: 0 !important;
+  padding: 56px 48px 64px !important;
+}
+
+/* ─── MODULE CARDS: GENUINELY COMPACT ────────────────── */
+.reclaim-landing .hero-module-cards {
+  max-width: 680px !important;
+  gap: 10px !important;
+  margin-bottom: 20px !important;
+}
+.reclaim-landing .hero-module-card {
+  padding: 12px 10px 10px !important;
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+/* Hide the tagline blurb — icon + name only */
+.reclaim-landing .hero-module-blurb {
+  display: none !important;
+}
+.reclaim-landing .hero-module-icon {
+  width: 28px !important;
+  height: 28px !important;
+  margin-bottom: 6px !important;
+}
+.reclaim-landing .hero-module-icon svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+.reclaim-landing .hero-module-name {
+  font-size: 12px !important;
+  letter-spacing: 0.16em !important;
+  margin-bottom: 0 !important;
+}
+
+/* ─── HERO-SUB: SMALLER FONT, SAME TEXT ──────────────── */
+.reclaim-landing .hero-sub {
+  font-size: 13px !important;
+  color: rgba(255,255,255,0.38) !important;
+  max-width: 680px !important;
+  margin-bottom: 24px !important;
+  line-height: 1.65 !important;
+}
+
+/* Tighten remaining gaps */
+.reclaim-landing .hero-logo-lockup { margin-bottom: 16px !important; }
+.reclaim-landing .hero-tagline {
+  margin-bottom: 24px !important;
+  font-size: clamp(34px, 4.2vw, 60px) !important;
+}
+
+/* ─── SPACING CALIBRATION — open it up a little ──────── */
+.reclaim-landing .hero {
+  padding: 72px 48px 96px !important;
+}
+.reclaim-landing .hero-logo-lockup { margin-bottom: 24px !important; }
+.reclaim-landing .hero-tagline {
+  margin-bottom: 36px !important;
+  font-size: clamp(36px, 4.5vw, 64px) !important;
+}
+.reclaim-landing .hero-module-cards {
+  margin-bottom: 36px !important;
+  gap: 14px !important;
+}
+.reclaim-landing .hero-sub {
+  font-size: 15px !important;
+  line-height: 1.75 !important;
+  margin-bottom: 40px !important;
+  max-width: 640px !important;
+}
+.reclaim-landing .hero-stats {
+  margin-top: 8px !important;
+}
+.reclaim-landing .hero-stat {
+  padding: 0 32px !important;
+}
+.reclaim-landing .hero-stat-divider {
+  height: 52px !important;
+  margin-top: 4px !important;
+}
+.reclaim-landing .hero-stats { align-items: flex-start; }
+.reclaim-landing .hero-stat-num { white-space: nowrap; min-height: 46px; display: flex; align-items: center; justify-content: center; }
+.reclaim-landing .hero-stat-desc { min-height: 48px; }

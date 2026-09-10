@@ -60,13 +60,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
           </button>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1" data-testid="desktop-nav">
             {navItems.map(item => {
               const active = activeSection === item.key;
               return (
                 <button
                   key={item.key}
                   onClick={() => onNavigate(item.key)}
+                  aria-label={item.label}
                   className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all"
                   style={{
                     color: active ? GOLD : 'rgba(255,255,255,0.6)',
@@ -76,7 +77,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
                   onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)'; }}
                 >
                   <item.icon className="w-4 h-4" />
-                  <span className="hidden xl:inline">{item.label}</span>
+                  {/* Label text only renders at xl+ for space; aria-label above covers it below that,
+                      so the button always has a real accessible name, not just an icon. */}
+                  <span className="hidden xl:inline" aria-hidden="true">{item.label}</span>
                 </button>
               );
             })}
@@ -171,6 +174,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
               className="lg:hidden p-2 rounded-lg transition-colors hover:bg-white/10"
               style={{ color: 'rgba(255,255,255,0.7)' }}
             >
@@ -184,6 +189,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
       {mobileOpen && (
         <div
           className="lg:hidden"
+          data-testid="mobile-nav"
           style={{ borderTop: '1px solid rgba(255,255,255,0.08)', backgroundColor: NAVY }}
         >
           <div className="px-4 py-3 space-y-1">

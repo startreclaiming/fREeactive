@@ -250,7 +250,7 @@ const HubSection: React.FC<{ onNavigate: (section: string) => void }> = ({ onNav
             </span>
             <div>
               <p className="text-xs font-semibold mb-1" style={{ color: '#8a6200' }}>Reclaim AI</p>
-              <p className="text-sm leading-relaxed" style={{ color: '#5c4200' }}>
+              <div className="text-sm leading-relaxed" style={{ color: '#5c4200' }}>
                 {scanRec && (
                   <span className="flex items-center gap-1.5 font-semibold mb-1" style={{ color: VERDICT_META[scanRec.verdict].fg }}>
                     {VERDICT_META[scanRec.verdict].icon} {VERDICT_META[scanRec.verdict].title}
@@ -264,7 +264,7 @@ const HubSection: React.FC<{ onNavigate: (section: string) => void }> = ({ onNav
                     ))}
                   </ul>
                 )}
-              </p>
+              </div>
             </div>
             <button onClick={dismiss} className="ml-auto text-gray-300 hover:text-gray-500 shrink-0"><X className="w-4 h-4" /></button>
           </div>

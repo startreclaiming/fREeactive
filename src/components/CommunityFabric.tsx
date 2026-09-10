@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/lib/usageTracking';
+import { useEntitlement } from '@/lib/entitlement';
 
 /**
  * Reclaim — Community : user-defined network (v1)
@@ -101,12 +102,30 @@ const KIND_META: Record<PostKind, { color: string; bg: string }> = {
 };
 
 const CommunityFabric: React.FC = () => {
+  // FREEactive is meant to be single-shot, no-persistence instant analysis — the
+  // whole Community Fabric feature (identity, network membership, posts) must not
+  // build up a durable history on the device for anonymous or trial-expired users,
+  // same rule as useStored in moduleUtils.ts.
+  const { isProActive, loading } = useEntitlement();
   const [store, setStore] = useState<Store>(empty);
   const [hydrated, setHydrated] = useState(false);
   const [pendingActivationId, setPendingActivationId] = useState<string | null>(null);
 
-  useEffect(() => { setStore(db.read()); setHydrated(true); }, []);
-  const commit = (next: Store) => { setStore(next); db.write(next); };
+  useEffect(() => {
+    if (loading) return;
+    if (isProActive) {
+      setStore(db.read());
+    } else {
+      try { localStorage.removeItem(KEY); } catch { /* ignore */ }
+      setStore(empty);
+    }
+    setHydrated(true);
+  }, [loading, isProActive]);
+
+  const commit = (next: Store) => {
+    setStore(next);
+    if (isProActive) db.write(next);
+  };
 
   const current = store.currentNetworkId ? store.networks[store.currentNetworkId] : null;
   const myNetworks = useMemo(
@@ -194,6 +213,7 @@ const CommunityFabric: React.FC = () => {
             posts={store.posts[current.id] ?? []}
             meId={store.me?.id ?? ''}
             onPost={addPost}
+            isProActive={isProActive}
           />
         : <Onboarding defaultName={store.me?.name ?? ''} onCreate={createNetwork} onJoin={joinNetwork} />
       }
@@ -325,7 +345,8 @@ const Onboarding: React.FC<{
 const NetworkHome: React.FC<{
   network: Network; members: Member[]; posts: Post[]; meId: string;
   onPost: (kind: PostKind, text: string) => void;
-}> = ({ network, members, posts, meId, onPost }) => {
+  isProActive: boolean;
+}> = ({ network, members, posts, meId, onPost, isProActive }) => {
   const [tab, setTab] = useState<'feed' | 'members' | 'board'>('feed');
   const [kind, setKind] = useState<PostKind>('Update');
   const [text, setText] = useState('');
@@ -449,7 +470,7 @@ const NetworkHome: React.FC<{
         </div>
       )}
 
-      {tab === 'board' && <NeighborhoodBoard />}
+      {tab === 'board' && <NeighborhoodBoard isProActive={isProActive} />}
     </>
   );
 };
@@ -458,15 +479,24 @@ const NetworkHome: React.FC<{
 const BOARD_KEY = 'reclaim_community_listings';
 const BOARD_CATEGORIES = ['Tool', 'Skill', 'Service', 'Lift / Transport', 'Other'];
 
-const NeighborhoodBoard: React.FC = () => {
-  const [listings, setListings] = useState<BoardListing[]>(() => {
-    try { const raw = localStorage.getItem(BOARD_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
-  });
+const NeighborhoodBoard: React.FC<{ isProActive: boolean }> = ({ isProActive }) => {
+  const [listings, setListings] = useState<BoardListing[]>([]);
   const [filter, setFilter] = useState<'all' | BoardKind>('all');
   const [form, setForm] = useState<Omit<BoardListing, 'id'>>({ title: '', kind: 'offer', category: 'Tool', note: '' });
 
+  // Same FREEactive no-persistence rule as the rest of Community Fabric.
+  useEffect(() => {
+    if (isProActive) {
+      try { const raw = localStorage.getItem(BOARD_KEY); setListings(raw ? JSON.parse(raw) : []); } catch { setListings([]); }
+    } else {
+      try { localStorage.removeItem(BOARD_KEY); } catch { /* ignore */ }
+      setListings([]);
+    }
+  }, [isProActive]);
+
   const persist = (next: BoardListing[]) => {
     setListings(next);
+    if (!isProActive) return;
     try { localStorage.setItem(BOARD_KEY, JSON.stringify(next)); } catch { /* ignore */ }
   };
   const add = () => {

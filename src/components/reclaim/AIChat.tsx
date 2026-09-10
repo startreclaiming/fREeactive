@@ -45,6 +45,7 @@ const AIChatComponent: React.FC<AIChatProps> = ({ pillar, context, placeholder }
       if (error) throw error;
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (err) {
+      console.error('ai-assistant request failed:', err);
       setMessages(prev => [...prev, { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again in a moment.' }]);
     } finally {
       setLoading(false);

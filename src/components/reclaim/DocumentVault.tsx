@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useEntitlement } from '@/lib/entitlement';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, FolderOpen, Plus, FileText, Home, DollarSign, Scale, Users, Trash2, X, Loader2, Search, Clock, LogIn, User } from 'lucide-react';
 
 interface DocumentVaultProps {
   onBack: () => void;
   onOpenAuth?: () => void;
+  onNavigate?: (section: string) => void;
 }
 
 interface Document {
@@ -17,8 +19,9 @@ interface Document {
   created_at: string;
 }
 
-const DocumentVault: React.FC<DocumentVaultProps> = ({ onBack, onOpenAuth }) => {
+const DocumentVault: React.FC<DocumentVaultProps> = ({ onBack, onOpenAuth, onNavigate }) => {
   const { user } = useAuth();
+  const { isProActive, loading: entitlementLoading } = useEntitlement();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
@@ -30,22 +33,24 @@ const DocumentVault: React.FC<DocumentVaultProps> = ({ onBack, onOpenAuth }) => 
   const [subcategory, setSubcategory] = useState('');
   const [notes, setNotes] = useState('');
 
-  const userId = user?.id || 'anonymous';
-
   useEffect(() => {
-    loadDocuments();
+    // Only ever query with a real user id — there is no "anonymous" vault, and
+    // documents.user_id is a UUID column, so a literal 'anonymous' string always
+    // errored and returned nothing anyway.
+    if (user) loadDocuments();
   }, [user]);
 
   const loadDocuments = async () => {
-    const { data } = await supabase.from('documents').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    if (!user) return;
+    const { data } = await supabase.from('documents').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
     if (data) setDocuments(data);
   };
 
   const addDocument = async () => {
-    if (!title) return;
+    if (!title || !user) return;
     setLoading(true);
     await supabase.from('documents').insert({
-      user_id: userId,
+      user_id: user.id,
       title,
       category,
       subcategory,
@@ -82,7 +87,11 @@ const DocumentVault: React.FC<DocumentVaultProps> = ({ onBack, onOpenAuth }) => 
     community: 'bg-orange-50 border-orange-200',
   };
 
-  if (!user) {
+  // The Document Vault ("Permanent Audit Vault") is a PROactive-only feature per
+  // PricingSection — gating on `user` alone let a signed-in user whose trial had
+  // fully expired keep using it forever. Gate on entitlement, not just an account.
+  if (!entitlementLoading && (!user || !isProActive)) {
+    const expired = !!user && !isProActive;
     return (
       <div>
         <button onClick={onBack} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium mb-4 transition-colors">
@@ -93,12 +102,16 @@ const DocumentVault: React.FC<DocumentVaultProps> = ({ onBack, onOpenAuth }) => 
             <FolderOpen className="w-10 h-10 text-purple-600" />
           </div>
           <h2 className="text-3xl font-black text-gray-900 mb-3">Secure Document Vault</h2>
-          <p className="text-gray-500 max-w-md mx-auto mb-8">Sign in to securely store and organize your bills, receipts, legal papers, and maintenance records.</p>
+          <p className="text-gray-500 max-w-md mx-auto mb-8">
+            {expired
+              ? 'Your trial has ended. Upgrade to PROactive to keep storing and organizing your bills, receipts, legal papers, and maintenance records.'
+              : 'Sign in to securely store and organize your bills, receipts, legal papers, and maintenance records.'}
+          </p>
           <button
-            onClick={onOpenAuth}
+            onClick={expired ? () => onNavigate?.('pricing') : onOpenAuth}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-bold text-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg"
           >
-            <LogIn className="w-5 h-5" /> Sign In to Access Vault
+            <LogIn className="w-5 h-5" /> {expired ? 'Upgrade to PROactive' : 'Sign In to Access Vault'}
           </button>
         </div>
       </div>

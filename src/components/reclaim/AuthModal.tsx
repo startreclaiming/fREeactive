@@ -4,7 +4,7 @@
  * Uses the invite code gate for sign-up (FOUNDMONEY or RECLAIM).
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { validateInviteCode } from '../../lib/inviteCode';
 import { X, Loader2, Eye, EyeOff } from 'lucide-react';
@@ -32,6 +32,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [loading,    setLoading]    = useState(false);
   const [error,      setError]      = useState<string | null>(null);
   const [success,    setSuccess]    = useState<string | null>(null);
+
+  // Sync to the caller's requested tab each time the modal opens — otherwise
+  // callers that open it via openAuth('signup') always land on Sign In first.
+  useEffect(() => {
+    if (isOpen) setMode(defaultTab === 'signup' ? 'signup' : 'signin');
+  }, [isOpen, defaultTab]);
 
   if (!isOpen) return null;
 

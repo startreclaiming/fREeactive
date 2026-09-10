@@ -13,8 +13,6 @@ import {
 
 import supabase from '../../lib/supabase';
 
-const SUPABASE_URL = 'https://cjfheftldokpokqmckri.supabase.co';
-
 interface UnclaimedProperty {
   id: number;
   owner_name: string;
@@ -63,8 +61,9 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
         .select('id, owner_name, holder_name, last_known_address, amount, property_type, zipcode')
         .ilike('owner_name', `%${query}%`)
         .limit(25);
-      if (zip.trim()) {
-        q = q.eq('zipcode', parseInt(zip.trim(), 10));
+      const zipDigits = zip.replace(/\D/g, '').slice(0, 5);
+      if (zipDigits) {
+        q = q.eq('zipcode', parseInt(zipDigits, 10));
       }
       const { data, error } = await q;
       if (error) return { data: [], error: error.message };
@@ -123,16 +122,17 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
     setSending(true);
     setSendError(null);
     try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-claim-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailCapture.trim(), properties: selectedProperties }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to send email');
+      // There's no email-sending provider wired into this project, so rather than
+      // hit a nonexistent edge function (which 404'd on every submission), save the
+      // request server-side — the UI is honest about this being a saved request,
+      // not a sent email, until real delivery exists.
+      const { error } = await supabase
+        .from('claim_leads')
+        .insert({ email: emailCapture.trim(), properties: selectedProperties });
+      if (error) throw new Error(error.message);
       setCurrentStep('success-upsell');
     } catch (err: any) {
-      setSendError(err?.message || 'Failed to send email. Please try again.');
+      setSendError(err?.message || 'Something went wrong saving your request. Please try again.');
     }
     setSending(false);
   };
@@ -311,7 +311,7 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
               </div>
               <h3 className="text-xl font-black text-white tracking-wide">Get your claim guide</h3>
               <p className="text-gray-400 text-xs mt-2 max-w-sm mx-auto leading-relaxed">
-                We'll email you the details on your {selectedProperties.length} selected propert{selectedProperties.length !== 1 ? 'ies' : 'y'}, plus step-by-step instructions to file with the California State Controller's Office.
+                We'll save the details on your {selectedProperties.length} selected propert{selectedProperties.length !== 1 ? 'ies' : 'y'} and follow up with step-by-step instructions to file with the California State Controller's Office.
               </p>
             </div>
 
@@ -354,7 +354,7 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
                 disabled={sending}
                 className="w-full bg-[#f0a700] hover:brightness-105 text-[#181818] font-bold py-4 rounded-lg text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
               >
-                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send my claim guide'}
+                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save my claim request'}
               </button>
             </form>
           </div>
@@ -371,10 +371,10 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
             </div>
 
             <h3 className="text-xl font-black text-white mb-2 tracking-wide">
-              Your claim guide is on its way!
+              Your claim request is saved!
             </h3>
             <p className="text-gray-400 text-xs max-w-md mx-auto mb-8 leading-relaxed">
-              Check your inbox at <span className="text-white font-semibold underline decoration-[#f0a700]">{emailCapture}</span>. We've included everything you need to claim your <span className="text-[#f0a700] font-bold">${fmtAmt(totalSelected)}</span>.
+              We've saved your request for <span className="text-white font-semibold underline decoration-[#f0a700]">{emailCapture}</span> covering <span className="text-[#f0a700] font-bold">${fmtAmt(totalSelected)}</span>. We'll follow up with everything you need to file your claim.
             </p>
 
             <hr className="border-neutral-800/80 my-6" />

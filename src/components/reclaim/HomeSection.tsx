@@ -51,7 +51,9 @@ const HomeSection: React.FC<{ onBack?: () => void; onNavigate?: (section: string
       purchaseDate: !form.purchaseDate && r.manufactureYear ? `${r.manufactureYear}-01-01` : form.purchaseDate,
     });
     setLastScan(r);
-    trackEvent('scan_completed', 'home', { category: r.category, brand: r.brand });
+    // No appliance content (category/brand) in analytics — see moduleUtils.ts's
+    // useStored for why FREEactive must stay single-shot/no-persistence.
+    trackEvent('scan_completed', 'home');
   };
 
   const add = () => {
@@ -71,7 +73,7 @@ const HomeSection: React.FC<{ onBack?: () => void; onNavigate?: (section: string
   const searchManual = (item: Item) => {
     trackEvent('search_manual', 'home');
     const q = encodeURIComponent(`${item.brand} ${item.name} manual pdf`);
-    window.open(`https://www.google.com/search?q=${q}`, '_blank');
+    window.open(`https://www.google.com/search?q=${q}`, '_blank', 'noopener,noreferrer');
   };
   const addToVault = () => onNavigate?.('vault');
 

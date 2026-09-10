@@ -39,7 +39,9 @@ const MoneySection: React.FC<{ onBack?: () => void; onNavigate?: (section: strin
   const onScan = (r: BillScan) => {
     setForm({ name: r.vendor || form.name, amount: r.amount ?? form.amount, frequency: form.frequency, vendor: r.vendor, flags: r.flags });
     setDetected(r);
-    trackEvent('scan_completed', 'money', { verdict: r.verdict });
+    // No bill content (verdict) in analytics — see moduleUtils.ts's useStored for
+    // why FREEactive must stay single-shot/no-persistence.
+    trackEvent('scan_completed', 'money');
   };
 
   const add = () => {

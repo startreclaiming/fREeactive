@@ -36,14 +36,14 @@ const ROWS = [
 
 const PricingSection: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const { user } = useAuth();
-  const { isProActive, isSubscribed, trialStatus, trialDaysRemaining } = useEntitlement();
+  const { isProActive, isSubscribed, trialStatus, trialDaysRemaining, loading } = useEntitlement();
 
   const handleUpgrade = () => {
     trackEvent('pricing_upgrade_clicked', 'general');
     const url = new URL(PROACTIVE_CHECKOUT_URL);
     if (user?.id) url.searchParams.set('client_reference_id', user.id);
     if (user?.email) url.searchParams.set('prefilled_email', user.email);
-    window.open(url.toString(), '_blank');
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -76,7 +76,11 @@ const PricingSection: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </table>
       </div>
 
-      {isProActive ? (
+      {loading ? (
+        <div className="card p-6">
+          <p className="text-sm text-gray-400">Checking your account…</p>
+        </div>
+      ) : isProActive ? (
         <div className="card p-5 flex items-center gap-3">
           <span className="inline-flex items-center justify-center w-10 h-10 rounded-full" style={{ background: 'rgba(16,163,74,0.1)', color: '#10a34a' }}><Check className="w-5 h-5" /></span>
           <div>

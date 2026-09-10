@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ScanLine, Loader2, X, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { readResized } from '@/lib/imageResize';
 
 export type Verdict = 'clear' | 'review' | 'vampire';
 export type BillFlag = { label: string; reason: string; severity?: 'confirm' | 'dispute' };
@@ -29,8 +30,17 @@ export function parseBill(text: string): BillScan {
   };
   const all = grab(text);
   let total: number | null = null;
-  const totalLine = lines.find((l) => /(total|amount\s*due|balance|due)/i.test(l) && grab(l).length > 0);
-  if (totalLine) total = Math.max(...grab(totalLine));
+  // Prefer a line naming the amount actually owed over a generic "total" — a line
+  // like "Previous Balance $200.00  Total Amount Due $45.00" matches both, and the
+  // due amount is what the customer needs, not the larger prior-balance figure.
+  const dueLine = lines.find((l) => /(amount\s*due|balance\s*due|total\s*due|payment\s*due)/i.test(l) && grab(l).length > 0);
+  const totalLine = dueLine || lines.find((l) => /(total|balance|due)/i.test(l) && grab(l).length > 0);
+  if (totalLine) {
+    const nums = grab(totalLine);
+    // The due amount is conventionally the last figure on its line (after any
+    // subtotal/previous-balance breakdown), so prefer that over the largest number.
+    total = nums[nums.length - 1];
+  }
   if (total === null && all.length) total = Math.max(...all);
   const vendor =
     lines.find(
@@ -65,29 +75,6 @@ function fromAI(bill: any): BillScan {
       : [],
     verdict,
   };
-}
-
-/** Downscale + re-encode so uploads stay small and reliable for the API. */
-function readResized(file: File, maxDim = 1600): Promise<{ data: string; mediaType: string }> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-      const w = Math.max(1, Math.round(img.width * scale));
-      const h = Math.max(1, Math.round(img.height * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) { reject(new Error('canvas unavailable')); return; }
-      ctx.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-      resolve({ data: dataUrl.split(',')[1], mediaType: 'image/jpeg' });
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('image load failed')); };
-    img.src = url;
-  });
 }
 
 /**

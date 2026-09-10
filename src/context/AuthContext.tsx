@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
@@ -88,6 +88,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  // Tracks whose profile is "current" so a slow fetch for a user who has since
+  // signed out (or switched accounts) can't land late and resurrect stale data.
+  const activeUserIdRef = useRef<string | null>(null);
 
   const fetchProfile = useCallback(async (userId: string) => {
     const { data, error } = await supabase
@@ -95,6 +98,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .select('*')
       .eq('id', userId)
       .single();
+
+    if (activeUserIdRef.current !== userId) return;
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -105,13 +110,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let cancelled = false;
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (cancelled) return;
       setSession(session);
       setUser(session?.user ?? null);
+      activeUserIdRef.current = session?.user?.id ?? null;
       if (session?.user) {
-        fetchProfile(session.user.id);
+        // Wait for the profile before clearing `loading`, so the first paint
+        // never has to guess at entitlement while it's still in flight.
+        await fetchProfile(session.user.id);
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     });
 
     const {
@@ -119,6 +130,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      activeUserIdRef.current = session?.user?.id ?? null;
       if (session?.user) {
         fetchProfile(session.user.id);
       } else {
@@ -127,7 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, [fetchProfile]);
 
   async function signUp(email: string, password: string) {

@@ -8,6 +8,7 @@ import { readStored, useStored, uid } from './moduleUtils';
 import { scanDocument, BillScan, Verdict } from './BillScanner';
 import CompletionPrompt from './CompletionPrompt';
 import { trackEvent, Pillar } from '@/lib/usageTracking';
+import { useEntitlement } from '@/lib/entitlement';
 import './modules.css';
 
 const GOLD = '#f0a700';
@@ -78,21 +79,29 @@ function routeScan(r: BillScan): RouteResult {
 }
 
 const HubSection: React.FC<{ onNavigate: (section: string) => void }> = ({ onNavigate }) => {
-  const charges  = readStored<AnyRec[]>('reclaim_money_charges', []);
-  const homeItems = readStored<AnyRec[]>('reclaim_home_items', []);
+  const { isProActive } = useEntitlement();
+  const charges  = readStored<AnyRec[]>('reclaim_money_charges', [], isProActive);
+  const homeItems = readStored<AnyRec[]>('reclaim_home_items', [], isProActive);
   const [scans, setScans] = useStored<ScanRecord[]>('reclaim_scans', []);
 
   const recovered = charges
     .filter((c) => c.status === 'recovered')
-    .reduce((s, c) => s + (c.frequency === 'monthly' ? Number(c.amount) * 12 : Number(c.amount || 0)), 0);
+    .reduce((s, c) => s + (c.frequency === 'monthly' ? Number(c.amount || 0) * 12 : Number(c.amount || 0)), 0);
 
   const vampireAlerts = scans.filter((s) => s.verdict === 'vampire').slice(0, 2);
+  // HomeSection's Item stores purchaseDate + warrantyMonths, not a precomputed
+  // warrantyExpiry field — derive the expiry date the same way HomeSection does.
   const expiringItems = homeItems
-    .filter((i) => {
-      if (!i.warrantyExpiry) return false;
-      const days = (new Date(i.warrantyExpiry as string).getTime() - Date.now()) / 86400000;
-      return days >= 0 && days <= 30;
+    .map((i) => {
+      const purchaseDate = i.purchaseDate as string | undefined;
+      const warrantyMonths = Number(i.warrantyMonths);
+      if (!purchaseDate || !warrantyMonths) return null;
+      const expiry = new Date(purchaseDate);
+      expiry.setMonth(expiry.getMonth() + warrantyMonths);
+      const days = (expiry.getTime() - Date.now()) / 86400000;
+      return days >= 0 && days <= 30 ? { item: i, expiry } : null;
     })
+    .filter((x): x is { item: AnyRec; expiry: Date } => x !== null)
     .slice(0, 2);
 
   const inputRef  = useRef<HTMLInputElement>(null);
@@ -118,7 +127,10 @@ const HubSection: React.FC<{ onNavigate: (section: string) => void }> = ({ onNav
       setScans([rec, ...scans].slice(0, 50));
       const routed = routeScan(r);
       setRoute(routed);
-      trackEvent('scan_completed', routed.module, { verdict });
+      // No scan content (vendor, amount, verdict) in analytics — FREEactive is meant
+      // to be single-shot instant analysis, not a place that quietly rebuilds a
+      // content history for anonymous users, even in an insert-only events table.
+      trackEvent('scan_completed', routed.module);
     } catch { setError('Could not read that one. Try a clearer, well-lit photo.'); }
     finally { setScanning(false); }
   }, [scans, setScans]);
@@ -307,12 +319,12 @@ const HubSection: React.FC<{ onNavigate: (section: string) => void }> = ({ onNav
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
               </button>
             ))}
-            {expiringItems.map((item: AnyRec, i) => (
+            {expiringItems.map(({ item, expiry }, i) => (
               <button key={i} onClick={() => onNavigate('home')} className="w-full flex items-center gap-3 p-4 hover:bg-gray-50 text-left transition-colors">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: GOLD }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">Warranty expiring — {String(item.name || 'item')}</p>
-                  <p className="text-xs text-gray-400">Expires {new Date(item.warrantyExpiry as string).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                  <p className="text-xs text-gray-400">Expires {expiry.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
               </button>

@@ -40,7 +40,7 @@ const CompletionPrompt: React.FC<CompletionPromptProps> = ({ pillar, shareText }
 
   const handleContribute = () => {
     trackEvent('contribute_clicked', pillar);
-    window.open(CONTRIBUTE_URL, '_blank');
+    window.open(CONTRIBUTE_URL, '_blank', 'noopener,noreferrer');
   };
 
   // No password, no account form — just an email, matching the wireframe's own

@@ -61,7 +61,10 @@ const AppLayout: React.FC = () => {
     <div className="min-h-screen bg-white">
       <Navbar activeSection={activeSection} onNavigate={navigate} onOpenAuth={openAuth} />
 
-      {user && <TrialBanner profile={profile} onUpgradeClick={() => navigate('pricing')} />}
+      {/* Wait for `profile` too, not just `user` — right after sign-in there's a brief
+          window where user is set but profile hasn't resolved yet; showing the banner
+          then would read profile as null and falsely claim "14 days remaining". */}
+      {user && profile && <TrialBanner profile={profile} onUpgradeClick={() => navigate('pricing')} />}
 
       <AuthModal
         isOpen={authModalOpen}
@@ -108,7 +111,7 @@ const AppLayout: React.FC = () => {
 
       {activeSection === 'vault' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <DocumentVault onBack={() => navigate('hero')} onOpenAuth={() => openAuth('signup')} />
+          <DocumentVault onBack={() => navigate('hero')} onOpenAuth={() => openAuth('signup')} onNavigate={navigate} />
         </div>
       )}
 

@@ -25,8 +25,14 @@ export interface Referral {
   sectorZip?: string;
 }
 
+// The referral is effectively constant for the life of a tab — cache it in memory
+// after the first resolution instead of re-parsing the URL/sessionStorage on every
+// trackEvent call.
+let cachedReferral: Referral | null | undefined;
+
 /** Captures ?ref=&zip= from a QR/flyer link on first visit and remembers it for the session. */
 export function captureReferralFromUrl(): Referral | null {
+  if (cachedReferral !== undefined) return cachedReferral;
   try {
     const params = new URLSearchParams(window.location.search);
     const referrerId = params.get('ref') || undefined;
@@ -34,11 +40,14 @@ export function captureReferralFromUrl(): Referral | null {
     if (referrerId || sectorZip) {
       const referral = { referrerId, sectorZip };
       sessionStorage.setItem(REFERRAL_KEY, JSON.stringify(referral));
+      cachedReferral = referral;
       return referral;
     }
     const stored = sessionStorage.getItem(REFERRAL_KEY);
-    return stored ? JSON.parse(stored) : null;
+    cachedReferral = stored ? JSON.parse(stored) : null;
+    return cachedReferral;
   } catch {
+    cachedReferral = null;
     return null;
   }
 }

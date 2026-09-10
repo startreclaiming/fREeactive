@@ -38,9 +38,8 @@ const CompletionPrompt: React.FC<CompletionPromptProps> = ({ pillar, shareText }
     } catch { /* clipboard blocked */ }
   };
 
-  const handleContribute = () => {
+  const handleContributeClick = () => {
     trackEvent('contribute_clicked', pillar);
-    window.open(CONTRIBUTE_URL, '_blank', 'noopener,noreferrer');
   };
 
   // No password, no account form — just an email, matching the wireframe's own
@@ -66,12 +65,18 @@ const CompletionPrompt: React.FC<CompletionPromptProps> = ({ pillar, shareText }
         <span className="text-sm font-medium">{copied ? 'Link copied' : 'Share this with your block'}</span>
       </button>
 
-      <button onClick={handleContribute} className="w-full card p-3 flex items-center gap-3 text-left hover:-translate-y-0.5 transition-transform">
+      <a
+        href={CONTRIBUTE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleContributeClick}
+        className="w-full card p-3 flex items-center gap-3 text-left hover:-translate-y-0.5 transition-transform"
+      >
         <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg shrink-0" style={{ background: 'rgba(240,167,0,0.12)', color: GOLD }}>
           <HeartHandshake className="w-4 h-4" />
         </span>
         <span className="text-sm font-medium">Contribute to ongoing development</span>
-      </button>
+      </a>
 
       {!emailOpen && !sent && (
         <button onClick={() => setEmailOpen(true)} className="w-full p-2 flex items-center justify-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors">

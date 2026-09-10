@@ -14,7 +14,7 @@ test.describe('Pricing / PROactive upgrade', () => {
 
     const [popup] = await Promise.all([
       page.waitForEvent('popup'),
-      page.getByRole('button', { name: 'Upgrade to PROactive' }).click(),
+      page.getByRole('link', { name: 'Upgrade to PROactive' }).click(),
     ]);
     expect(popup.url()).toContain('buy.stripe.com');
     expect(consoleErrors).toEqual([]);

@@ -38,12 +38,15 @@ const PricingSection: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const { user } = useAuth();
   const { isProActive, isSubscribed, trialStatus, trialDaysRemaining, loading } = useEntitlement();
 
-  const handleUpgrade = () => {
+  // A real <a target="_blank"> rather than window.open() — script-triggered popups
+  // are handled inconsistently on mobile browsers and can hijack the current tab
+  // with no way back into the app; a genuine link always opens as a real new tab.
+  const upgradeUrl = new URL(PROACTIVE_CHECKOUT_URL);
+  if (user?.id) upgradeUrl.searchParams.set('client_reference_id', user.id);
+  if (user?.email) upgradeUrl.searchParams.set('prefilled_email', user.email);
+
+  const handleUpgradeClick = () => {
     trackEvent('pricing_upgrade_clicked', 'general');
-    const url = new URL(PROACTIVE_CHECKOUT_URL);
-    if (user?.id) url.searchParams.set('client_reference_id', user.id);
-    if (user?.email) url.searchParams.set('prefilled_email', user.email);
-    window.open(url.toString(), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -92,7 +95,7 @@ const PricingSection: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         <div className="card p-6">
           <p className="font-semibold mb-1">{trialStatus === 'expired' ? 'Your trial has ended' : 'Ready for PROactive?'}</p>
           <p className="text-sm text-gray-500 mb-4">$9.99/month, cancel any time. No account required to keep using every FREEactive feature.</p>
-          <button onClick={handleUpgrade} className="btn-gold">Upgrade to PROactive</button>
+          <a href={upgradeUrl.toString()} target="_blank" rel="noopener noreferrer" onClick={handleUpgradeClick} className="btn-gold">Upgrade to PROactive</a>
         </div>
       )}
     </div>

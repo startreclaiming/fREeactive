@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from './reclaim/Navbar';
-import HubSection from './reclaim/HubSection';
-import HomeSection from './reclaim/HomeSection';
-import MoneySection from './reclaim/MoneySection';
-import ResolveSection from './reclaim/ResolveSection';
-import CommunityFabric from '@/components/CommunityFabric';
+import FreeactiveHub from './reclaim/FreeactiveHub';
 import Dashboard from './reclaim/Dashboard';
-import DocumentVault from './reclaim/DocumentVault';
 import UserProfile from './reclaim/UserProfile';
 import AuthModal from './reclaim/AuthModal';
-import AIChatComponent from './reclaim/AIChat';
 import Footer from './reclaim/Footer';
 import { TrialBanner } from './reclaim/TrialBanner';
 import PricingSection from './reclaim/PricingSection';
 
-type Section = 'hero' | 'home' | 'money' | 'resolve' | 'community' | 'dashboard' | 'vault' | 'profile' | 'pricing';
+// Home/Money/Resolve/Community/Doc Vault are PROactive (paid) features that aren't
+// offered yet — their components still exist on disk for when that tier launches,
+// but they're intentionally not wired into the app shell right now. FREEactive is
+// just the Hub (scan/talk/type) and the free Alameda money-search ('dashboard').
+type Section = 'hero' | 'dashboard' | 'profile' | 'pricing';
 
 const AppLayout: React.FC = () => {
   const { user, profile } = useAuth();
   const [activeSection, setActiveSection] = useState<Section>(() => {
-    try { return (sessionStorage.getItem('reclaim_active_section') as Section) || 'hero'; }
-    catch { return 'hero'; }
+    try {
+      const stored = sessionStorage.getItem('reclaim_active_section');
+      const valid: Section[] = ['hero', 'dashboard', 'profile', 'pricing'];
+      return (valid as string[]).includes(stored || '') ? (stored as Section) : 'hero';
+    } catch { return 'hero'; }
   });
 
   // Remember the current screen so an iOS camera-reload returns here, not Hub.
@@ -33,14 +34,11 @@ const AppLayout: React.FC = () => {
   const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login');
 
   const navigate = (section: string) => {
-    // Redirect to auth for protected sections if not logged in
-    if (!user && ['dashboard', 'vault', 'profile'].includes(section)) {
-      // Dashboard and vault show their own sign-in prompts, profile needs auth
-      if (section === 'profile') {
-        setAuthModalTab('login');
-        setAuthModalOpen(true);
-        return;
-      }
+    // Profile needs an account; Dashboard (the free money search) doesn't.
+    if (!user && section === 'profile') {
+      setAuthModalTab('login');
+      setAuthModalOpen(true);
+      return;
     }
     setActiveSection(section as Section);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -50,12 +48,6 @@ const AppLayout: React.FC = () => {
     setAuthModalTab(tab);
     setAuthModalOpen(true);
   };
-
-  const communityish = activeSection === 'community';
-  const chatVisible = ['home', 'money', 'resolve'].includes(activeSection) || communityish;
-  const chatPillar = (communityish
-    ? 'community'
-    : (['home', 'money', 'resolve'].includes(activeSection) ? activeSection : 'home')) as 'home' | 'money' | 'resolve' | 'community';
 
   return (
     <div className="min-h-screen bg-white">
@@ -74,44 +66,13 @@ const AppLayout: React.FC = () => {
 
       {activeSection === 'hero' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <HubSection onNavigate={navigate} />
-        </div>
-      )}
-
-      {activeSection === 'home' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <HomeSection onBack={() => navigate('hero')} onNavigate={navigate} />
-        </div>
-      )}
-
-      {activeSection === 'money' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <MoneySection onBack={() => navigate('hero')} onNavigate={navigate} />
-        </div>
-      )}
-
-      {activeSection === 'resolve' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <ResolveSection onBack={() => navigate('hero')} />
-        </div>
-      )}
-
-      {activeSection === 'community' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <button onClick={() => navigate('hero')} className="text-sm text-gray-500 hover:text-gray-900 mb-4">← Back</button>
-          <CommunityFabric />
+          <FreeactiveHub onNavigate={navigate} />
         </div>
       )}
 
       {activeSection === 'dashboard' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Dashboard onBack={() => navigate('hero')} onNavigate={navigate} onOpenAuth={() => openAuth('signup')} />
-        </div>
-      )}
-
-      {activeSection === 'vault' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <DocumentVault onBack={() => navigate('hero')} onOpenAuth={() => openAuth('signup')} onNavigate={navigate} />
         </div>
       )}
 
@@ -125,10 +86,6 @@ const AppLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <PricingSection onBack={() => navigate('hero')} />
         </div>
-      )}
-
-      {chatVisible && (
-        <AIChatComponent pillar={chatPillar} />
       )}
 
       <Footer onNavigate={navigate} />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, ArrowRight, CheckCircle2, Home, DollarSign, Scale, Users } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (section: string) => void;
@@ -8,6 +8,9 @@ interface FooterProps {
 const NAVY = '#181818';
 const GOLD = '#f0a700';
 
+// Kept deliberately minimal to match the rest of the app right now — no links
+// into Home/Money/Resolve/Community-style feature lists, since those sections
+// are a PROactive tier that isn't offered yet and those links would just dead-end.
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -21,33 +24,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     }
   };
 
-  const columns = [
-    {
-      icon: Home,
-      label: 'Home',
-      section: 'home',
-      links: ['DIY Guides', 'Maintenance Calendar', 'Tool Library', 'Safety Checks', 'Energy Savings'],
-    },
-    {
-      icon: DollarSign,
-      label: 'Money',
-      section: 'money',
-      links: ['Bill Analyzer', 'Dispute Letters', 'Credit Reports', 'Fee Recovery', 'Budget Tools'],
-    },
-    {
-      icon: Scale,
-      label: 'Resolve',
-      section: 'resolve',
-      links: ['Legal Templates', 'Court Guides', 'FOIA Requests', 'Know Your Rights', 'Attorney Check'],
-    },
-    {
-      icon: Users,
-      label: 'Community',
-      section: 'community',
-      links: ['Incident Reports', 'Resource Sharing', 'Camera Network', 'Neighborhood Map', 'Events'],
-    },
-  ];
-
   return (
     <footer style={{ backgroundColor: NAVY }}>
 
@@ -56,9 +32,9 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="max-w-6xl mx-auto px-6 lg:px-10 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <h3 className="text-xl font-black text-white mb-1">Stay Empowered</h3>
+              <h3 className="text-xl font-black text-white mb-1">Stay in the loop</h3>
               <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Weekly tips on protecting your home, money, rights, and community.
+                We'll let you know when new features launch.
               </p>
             </div>
             <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
@@ -96,46 +72,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Main footer links */}
-      <div className="max-w-6xl mx-auto px-6 lg:px-10 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <img src="/reclaim-logo-2.png" alt="Reclaim" className="h-6 w-auto object-contain mb-4" />
-            <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              Empowering citizens to reclaim their homes, money, rights, and community.
-            </p>
-          </div>
-
-          {/* Pillar columns */}
-          {columns.map(col => (
-            <div key={col.label}>
-              <h4
-                className="font-bold text-sm mb-4 flex items-center gap-2"
-                style={{ color: GOLD }}
-              >
-                <col.icon className="w-3.5 h-3.5" />
-                {col.label}
-              </h4>
-              <ul className="space-y-2">
-                {col.links.map(link => (
-                  <li key={link}>
-                    <button
-                      onClick={() => onNavigate(col.section)}
-                      className="text-xs transition-colors text-left"
-                      style={{ color: 'rgba(255,255,255,0.35)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'white'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.35)'; }}
-                    >
-                      {link}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+      {/* Brand */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-10 py-10">
+        <img src="/reclaim-logo-2.png" alt="Reclaim" className="h-6 w-auto object-contain mb-3" />
+        <p className="text-xs leading-relaxed max-w-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          Instant help with your home, money, and rights — free.
+        </p>
       </div>
 
       {/* Bottom bar */}
@@ -143,7 +85,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="max-w-6xl mx-auto px-6 lg:px-10 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-              © 2025 Reclaim. All rights reserved.
+              © 2026 Reclaim. All rights reserved.
             </p>
             <div className="flex items-center gap-5">
               <button
@@ -155,17 +97,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               >
                 Pricing
               </button>
-              {['Privacy Policy', 'Terms of Service', 'Contact'].map(link => (
-                <button
-                  key={link}
-                  className="text-xs transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.25)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'white'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.25)'; }}
-                >
-                  {link}
-                </button>
-              ))}
             </div>
           </div>
         </div>

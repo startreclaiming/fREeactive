@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Home, DollarSign, Scale, Users, LayoutDashboard, FolderOpen, Menu, X, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Settings, LogOut, ChevronDown } from 'lucide-react';
 
 interface NavbarProps {
   activeSection: string;
@@ -11,18 +11,11 @@ interface NavbarProps {
 const NAVY = '#181818';
 const GOLD = '#f0a700';
 
-const navItems = [
-  { key: 'home',      label: 'Home',      icon: Home,            },
-  { key: 'money',     label: 'Money',     icon: DollarSign,      },
-  { key: 'resolve',   label: 'Resolve',   icon: Scale,           },
-  { key: 'community', label: 'Community', icon: Users,           },
-  { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, },
-  { key: 'vault',     label: 'Doc Vault', icon: FolderOpen,      },
-];
-
-const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }) => {
+// FREEactive is just the Hub — there's no module navigation to show right now
+// (Home/Money/Resolve/Community/Vault are PROactive, not offered yet), so the
+// nav is deliberately just the logo and an account menu, not a menu of sections.
+const Navbar: React.FC<NavbarProps> = ({ onNavigate, onOpenAuth }) => {
   const { user, profile, signOut } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -58,32 +51,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
           >
             <img src="/reclaim-logo-2.png" alt="Reclaim" className="h-6 md:h-7 w-auto object-contain" />
           </button>
-
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-1" data-testid="desktop-nav">
-            {navItems.map(item => {
-              const active = activeSection === item.key;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => onNavigate(item.key)}
-                  aria-label={item.label}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all"
-                  style={{
-                    color: active ? GOLD : 'rgba(255,255,255,0.6)',
-                    backgroundColor: active ? 'rgba(240,167,0,0.12)' : 'transparent',
-                  }}
-                  onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'white'; }}
-                  onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)'; }}
-                >
-                  <item.icon className="w-4 h-4" />
-                  {/* Label text only renders at xl+ for space; aria-label above covers it below that,
-                      so the button always has a real accessible name, not just an icon. */}
-                  <span className="hidden xl:inline" aria-hidden="true">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
 
           {/* Right: user or auth */}
           <div className="flex items-center gap-3">
@@ -128,23 +95,16 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
                       </p>
                     </div>
                     <div className="py-1">
-                      {[
-                        { label: 'Dashboard',        icon: LayoutDashboard, key: 'dashboard' },
-                        { label: 'Profile & Settings', icon: Settings,       key: 'profile'   },
-                        { label: 'Document Vault',   icon: FolderOpen,      key: 'vault'     },
-                      ].map(item => (
-                        <button
-                          key={item.key}
-                          onClick={() => { onNavigate(item.key); setUserMenuOpen(false); }}
-                          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors"
-                          style={{ color: 'rgba(255,255,255,0.7)' }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.05)'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}
-                        >
-                          <item.icon className="w-4 h-4" style={{ color: GOLD }} />
-                          {item.label}
-                        </button>
-                      ))}
+                      <button
+                        onClick={() => { onNavigate('profile'); setUserMenuOpen(false); }}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors"
+                        style={{ color: 'rgba(255,255,255,0.7)' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.05)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}
+                      >
+                        <Settings className="w-4 h-4" style={{ color: GOLD }} />
+                        Profile & Settings
+                      </button>
                     </div>
                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                       <button
@@ -170,49 +130,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenAuth }
                 Sign In
               </button>
             )}
-
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={mobileOpen}
-              className="lg:hidden p-2 rounded-lg transition-colors hover:bg-white/10"
-              style={{ color: 'rgba(255,255,255,0.7)' }}
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden"
-          data-testid="mobile-nav"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', backgroundColor: NAVY }}
-        >
-          <div className="px-4 py-3 space-y-1">
-            {navItems.map(item => {
-              const active = activeSection === item.key;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => { onNavigate(item.key); setMobileOpen(false); }}
-                  className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all"
-                  style={{
-                    color: active ? GOLD : 'rgba(255,255,255,0.6)',
-                    backgroundColor: active ? 'rgba(240,167,0,0.12)' : 'transparent',
-                  }}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

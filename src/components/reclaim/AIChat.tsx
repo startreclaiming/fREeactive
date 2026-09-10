@@ -62,7 +62,7 @@ const AIChatComponent: React.FC<AIChatProps> = ({ pillar, context, placeholder }
   const suggestedQuestions: Record<string, string[]> = {
     home: ['How do I fix a leaky faucet?', 'What maintenance should I do each season?', 'How can I reduce my energy bills?'],
     money: ['Help me write a dispute letter for a medical bill', 'How do I check my credit report for errors?', 'What are my rights under the FDCPA?'],
-    resolve: ['How do I file in small claims court?', 'What should I look for in an attorney?', 'How do I file a FOIA request?'],
+    resolve: ['How do I sue someone for a small amount of money without a lawyer?', 'What should I look for in an attorney?', 'How do I get my own records from a government agency?'],
     community: ['How do I start a neighborhood watch?', 'What\'s the best way to set up shared security cameras?', 'How can I organize a community meeting?']
   };
 

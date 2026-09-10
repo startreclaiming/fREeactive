@@ -1,4 +1,4 @@
-import { test, expect, mobileDevice, desktopDevice, navigateMobile } from './fixtures';
+import { test, expect, mobileDevice, desktopDevice } from './fixtures';
 
 test.describe('Mobile', () => {
   test.use({ ...mobileDevice });
@@ -7,18 +7,12 @@ test.describe('Mobile', () => {
     await page.goto('/');
     // The Hub's own heading, not the marketing landing page's hero.
     await expect(page.getByRole('heading', { name: 'How can I help?' })).toBeVisible();
-    await expect(page.getByText('Scan or upload a document')).toBeVisible();
+    await expect(page.getByText('Scan', { exact: true })).toBeVisible();
+    await expect(page.getByText('Talk', { exact: true })).toBeVisible();
+    await expect(page.getByText('Am I owed money?')).toBeVisible();
     // Never a forced auth wall.
     await expect(page.getByText('CREATE ACCOUNT')).not.toBeVisible();
     expect(consoleErrors).toEqual([]);
-  });
-
-  test('the hamburger menu reaches every domain without a dead link', async ({ page }) => {
-    await page.goto('/');
-    for (const label of ['Home', 'Money', 'Resolve', 'Community']) {
-      await navigateMobile(page, label);
-      await expect(page.locator('body')).not.toContainText('Cannot GET');
-    }
   });
 });
 

@@ -392,7 +392,7 @@ export default function Dashboard({ onBack, onNavigate, onOpenAuth }: DashboardP
                     We're a small team helping every household reclaim what's theirs — completely free. If we found you money, consider supporting us so we can keep this free for everyone.
                   </p>
                   <button
-                    onClick={() => onNavigate('landing')}
+                    onClick={() => onNavigate('hero')}
                     className="px-5 py-2.5 bg-[#f0a700] hover:brightness-105 text-[#181818] font-bold text-xs rounded transition-all uppercase tracking-wider flex items-center gap-1 shadow-md"
                   >
                     <span>Support Reclaim</span>
